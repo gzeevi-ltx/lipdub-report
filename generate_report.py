@@ -80,9 +80,9 @@ NEGATIVE_EXAMPLES = [
         "id": "singing",
         "title": "Singing",
         "description": "The model cannot make characters sing. It speaks the lyrics instead, completely losing rhythm and melody. Background music is preserved but the vocal performance is lost.",
-        "clip": "kate_bush_wuthering_heights_clip_1",
-        "lang": "Spanish",
-        "clip_label": "Kate Bush — 'Wuthering Heights'",
+        "clip": "a_star_is_born_shallows_clip_2",
+        "lang": "Greek",
+        "clip_label": "A Star Is Born — Lady Gaga singing 'Shallow'",
     },
     {
         "id": "side-profile",
