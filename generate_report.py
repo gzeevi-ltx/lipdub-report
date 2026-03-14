@@ -121,7 +121,7 @@ NEGATIVE_EXAMPLES = [
         "title": "Emotional Intensity",
         "description": "Strong emotion in the original is lost in translation. The king screams 'forget about the blessed shilling' with real fury, but the dubbed voice sounds calm and measured. The model flattens vocal intensity regardless of the original performance.",
         "clip": "kings_speech_clip_1",
-        "lang": "Korean",
+        "lang": "Polish",
         "clip_label": "The King's Speech — screaming flattened",
     },
     {
