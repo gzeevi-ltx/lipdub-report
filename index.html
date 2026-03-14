@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeyGen Video Dubbing Benchmark</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.7;
+      color: #1a1a2e;
+      background: #fafafa;
+    }
+    .container { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 80px 0 40px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .hero h1 { font-size: 2.4em; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .hero .subtitle { font-size: 1.15em; color: #555; margin-bottom: 8px; }
+    .hero .date { font-size: 0.9em; color: #888; }
+
+    /* Sections */
+    section { padding: 48px 0; border-bottom: 1px solid #eee; }
+    section:last-child { border-bottom: none; }
+    h2 { font-size: 1.6em; margin-bottom: 20px; font-weight: 700; }
+    h3 { font-size: 1.25em; margin-bottom: 16px; font-weight: 600; }
+    h4 { font-size: 1.05em; margin-bottom: 8px; font-weight: 600; }
+    p { margin-bottom: 12px; }
+
+    /* TLDR */
+    .tldr ul { list-style: none; padding-left: 0; }
+    .tldr li { padding: 8px 0 8px 24px; position: relative; font-size: 1.05em; }
+    .tldr li::before { content: '\2022'; position: absolute; left: 4px; color: #4a6cf7; font-weight: bold; }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .stat-card {
+      background: white;
+      border: 1px solid #e8e8e8;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+    .stat-number { font-size: 2em; font-weight: 700; color: #4a6cf7; }
+    .stat-label { font-size: 0.85em; color: #666; margin-top: 4px; }
+
+    /* Methodology */
+    .method-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+      font-size: 0.95em;
+    }
+    .method-step {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-weight: 500;
+    }
+    .method-arrow { color: #aaa; font-size: 1.4em; }
+
+    /* Findings sections */
+    .findings-positive h2 { color: #16a34a; }
+    .findings-negative h2 { color: #dc2626; }
+
+    .example {
+      background: white;
+      border: 1px solid #e8e8e8;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 28px;
+    }
+    .example-desc { color: #444; font-size: 0.95em; }
+    .example-clip { color: #888; font-size: 0.85em; font-style: italic; margin-bottom: 16px; }
+
+    /* Video pair */
+    .video-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 640px) {
+      .video-pair { grid-template-columns: 1fr; }
+    }
+    .video-container {
+      position: relative;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .video-container video {
+      width: 100%;
+      display: block;
+      border-radius: 8px;
+    }
+    .video-controls {
+      position: absolute;
+      bottom: 32px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .video-container:hover .video-controls { opacity: 1; }
+    .video-controls button {
+      background: rgba(0,0,0,0.65);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .video-controls button:hover { background: rgba(0,0,0,0.85); }
+    .video-controls button.active { background: rgba(74, 108, 247, 0.85); }
+    .video-label {
+      display: block;
+      text-align: center;
+      padding: 8px 0;
+      font-size: 0.82em;
+      color: #666;
+      background: white;
+    }
+
+    /* Results table */
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9em;
+      margin-top: 16px;
+    }
+    .results-table th {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 2px solid #ddd;
+      font-weight: 600;
+      color: #333;
+    }
+    .results-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #eee;
+    }
+    .results-table tr:hover td { background: #f7f7ff; }
+    .clip-name { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.88em; }
+    .clip-tags { color: #888; font-size: 0.85em; }
+    .bar-good { color: #16a34a; font-weight: 600; }
+    .bar-ok { color: #ca8a04; font-weight: 600; }
+    .bar-bad { color: #dc2626; font-weight: 600; }
+    .bar-none { color: #999; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      color: #aaa;
+      font-size: 0.85em;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container">
+      <h1>HeyGen Video Dubbing Benchmark</h1>
+      <p class="subtitle">Evaluating AI-powered video dubbing across 47 clips and 40 languages</p>
+      <p class="date">March 2026 &mdash; LTX Research</p>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- TL;DR -->
+    <section class="tldr">
+      <h2>Key Takeaways</h2>
+      <ul>
+        <li><strong>93% overall success rate</strong> across 1,880 dubbing jobs (47 clips &times; 40 languages)</li>
+        <li><strong>Frontal dialogue works well</strong> &mdash; good lip sync, voice quality, and accent preservation for standard talking-head content</li>
+        <li><strong>Non-human and animated characters handled surprisingly well</strong> &mdash; CGI, animated, and masked faces produce quality results</li>
+        <li><strong>Singing is a non-starter</strong> &mdash; the model speaks lyrics instead of singing them, losing rhythm and melody entirely</li>
+        <li><strong>Distinctive voices and strong emotions are lost</strong> &mdash; unique voices become generic, screaming becomes calm, crying becomes flat</li>
+      </ul>
+    </section>
+
+    <!-- Overview -->
+    <section>
+      <h2>Overview</h2>
+      <p>We benchmarked HeyGen's video dubbing (via LTX Studio) on a curated set of 47 video clips spanning 17 categories: frontal dialogue, side profiles, occlusion, singing, animation, CGI, action, and more. Each clip was dubbed into 40 languages covering European, Asian, Middle Eastern, and African language families.</p>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">47</div>
+          <div class="stat-label">Video clips tested</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">40</div>
+          <div class="stat-label">Target languages</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">1,750</div>
+          <div class="stat-label">Successful dubs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">93%</div>
+          <div class="stat-label">Success rate</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Methodology -->
+    <section>
+      <h2>Methodology</h2>
+      <p>Each video was processed through the LTX Studio API, which wraps HeyGen's <code>/v2/video_translate</code> endpoint. Lip sync was enabled for all runs. The pipeline:</p>
+      <div class="method-flow">
+        <span class="method-step">Upload video</span>
+        <span class="method-arrow">&rarr;</span>
+        <span class="method-step">LTX Studio API</span>
+        <span class="method-arrow">&rarr;</span>
+        <span class="method-step">HeyGen dubbing</span>
+        <span class="method-arrow">&rarr;</span>
+        <span class="method-step">Download result</span>
+      </div>
+      <p>All 40 languages were batched into a single task per video. Typical processing time: 8&ndash;10 minutes per clip (all languages in parallel). Results were manually reviewed for lip sync quality, voice consistency, background preservation, and translation fidelity.</p>
+    </section>
+
+    <!-- What Works Well -->
+    <section class="findings-positive">
+      <h2>What Works Well</h2>
+
+    <div class="example" id="frontal-lip-sync">
+      <h4>Frontal Dialogue Lip Sync</h4>
+      <p class="example-desc">Standard frontal dialogue produces good lip sync quality with natural-sounding voice and accurate mouth movements.</p>
+      <p class="example-clip">Forrest Gump — bench scene</p>
+      <div class="video-pair" data-pair="pair-frontal-lip-sync">
+        <div class="video-container">
+          <video id="pair-frontal-lip-sync-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/forrest_gump_clip_2.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-frontal-lip-sync" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-frontal-lip-sync-orig" data-pair="pair-frontal-lip-sync" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-frontal-lip-sync-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/forrest_gump_clip_2_Russian.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-frontal-lip-sync" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-frontal-lip-sync-trans" data-pair="pair-frontal-lip-sync" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Russian)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="named-entities">
+      <h4>Named Entities and Proper Nouns</h4>
+      <p class="example-desc">Location names, technical terms, and proper nouns are correctly preserved across languages rather than being mistranslated.</p>
+      <p class="example-clip">Black Widow — phone call (&#x27;Zelinsky Plaza&#x27;)</p>
+      <div class="video-pair" data-pair="pair-named-entities">
+        <div class="video-container">
+          <video id="pair-named-entities-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/black_widow_avengers_clip_2.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-named-entities" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-named-entities-orig" data-pair="pair-named-entities" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-named-entities-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/black_widow_avengers_clip_2_Hebrew_(Israel).mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-named-entities" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-named-entities-trans" data-pair="pair-named-entities" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Hebrew (Israel))</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="non-human">
+      <h4>Non-Human and Animated Subjects</h4>
+      <p class="example-desc">CGI and animated characters with non-human face geometry are handled well, with accurate lip sync on stylized mouths.</p>
+      <p class="example-clip">Zootopia — animated animal characters</p>
+      <div class="video-pair" data-pair="pair-non-human">
+        <div class="video-container">
+          <video id="pair-non-human-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/zootopia_clip_1.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-non-human" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-non-human-orig" data-pair="pair-non-human" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-non-human-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/zootopia_clip_1_Spanish.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-non-human" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-non-human-trans" data-pair="pair-non-human" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Spanish)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="background-audio">
+      <h4>Background Audio Preservation</h4>
+      <p class="example-desc">Background music, sound effects, and ambient sounds are preserved in the dubbed output while the speech is replaced.</p>
+      <p class="example-clip">Fight Club — drums and guitar in background</p>
+      <div class="video-pair" data-pair="pair-background-audio">
+        <div class="video-container">
+          <video id="pair-background-audio-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/fight_club_pixies_clip_1.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-background-audio" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-background-audio-orig" data-pair="pair-background-audio" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-background-audio-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/fight_club_pixies_clip_1_Spanish.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-background-audio" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-background-audio-trans" data-pair="pair-background-audio" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Spanish)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="full-occlusion">
+      <h4>Full Occlusion / Hidden Lips</h4>
+      <p class="example-desc">When lips are consistently hidden behind a mask or in shadow, the model handles the dubbing well without visual artifacts.</p>
+      <p class="example-clip">V for Vendetta — full face mask</p>
+      <div class="video-pair" data-pair="pair-full-occlusion">
+        <div class="video-container">
+          <video id="pair-full-occlusion-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/v_for_vendetta_clip_1.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-full-occlusion" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-full-occlusion-orig" data-pair="pair-full-occlusion" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-full-occlusion-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/v_for_vendetta_clip_1_Spanish.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-full-occlusion" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-full-occlusion-trans" data-pair="pair-full-occlusion" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Spanish)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="off-screen">
+      <h4>Off-Screen and Phone Speech</h4>
+      <p class="example-desc">Speech from an unseen speaker (phone calls, camera cuts away) is handled correctly, even preserving phone-call audio characteristics.</p>
+      <p class="example-clip">Black Widow — phone call with static</p>
+      <div class="video-pair" data-pair="pair-off-screen">
+        <div class="video-container">
+          <video id="pair-off-screen-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/black_widow_avengers_clip_2.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-off-screen" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-off-screen-orig" data-pair="pair-off-screen" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-off-screen-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/black_widow_avengers_clip_2_Hebrew_(Israel).mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-off-screen" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-off-screen-trans" data-pair="pair-off-screen" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Hebrew (Israel))</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="character-accent">
+      <h4>Character Accent Preservation</h4>
+      <p class="example-desc">The distinctive accent quality of the original character is reflected in the translated voice.</p>
+      <p class="example-clip">Forrest Gump — distinctive Southern accent</p>
+      <div class="video-pair" data-pair="pair-character-accent">
+        <div class="video-container">
+          <video id="pair-character-accent-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/forrest_gump_clip_2.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-character-accent" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-character-accent-orig" data-pair="pair-character-accent" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-character-accent-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/forrest_gump_clip_2_Russian.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-character-accent" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-character-accent-trans" data-pair="pair-character-accent" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Russian)</span>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <!-- What Needs Improvement -->
+    <section class="findings-negative">
+      <h2>What Needs Improvement</h2>
+
+    <div class="example" id="singing">
+      <h4>Singing</h4>
+      <p class="example-desc">The model cannot make characters sing. It speaks the lyrics instead, completely losing rhythm and melody. Background music is preserved but the vocal performance is lost.</p>
+      <p class="example-clip">Kate Bush — &#x27;Wuthering Heights&#x27;</p>
+      <div class="video-pair" data-pair="pair-singing">
+        <div class="video-container">
+          <video id="pair-singing-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/kate_bush_wuthering_heights_clip_1.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-singing" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-singing-orig" data-pair="pair-singing" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-singing-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/kate_bush_wuthering_heights_clip_1_Spanish.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-singing" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-singing-trans" data-pair="pair-singing" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Spanish)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="side-profile">
+      <h4>Side Profile Lip Sync</h4>
+      <p class="example-desc">Side-profile shots produce blurry, jittering lips. Especially problematic when combined with eating or hand-to-face gestures.</p>
+      <p class="example-clip">Pulp Fiction — Uma Thurman eating</p>
+      <div class="video-pair" data-pair="pair-side-profile">
+        <div class="video-container">
+          <video id="pair-side-profile-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/pulp_fiction_clip_1.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-side-profile" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-side-profile-orig" data-pair="pair-side-profile" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-side-profile-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/pulp_fiction_clip_1_Hebrew_(Israel).mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-side-profile" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-side-profile-trans" data-pair="pair-side-profile" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Hebrew (Israel))</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="temp-occlusion">
+      <h4>Temporary Lip Occlusion</h4>
+      <p class="example-desc">When an object briefly passes over the lips (hand, person, microphone), the generated lips jitter and produce visual artifacts. Unlike full occlusion which works well, intermittent occlusion is problematic.</p>
+      <p class="example-clip">Godfather — lips jitter when occluded</p>
+      <div class="video-pair" data-pair="pair-temp-occlusion">
+        <div class="video-container">
+          <video id="pair-temp-occlusion-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/godfather_clip_1.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-temp-occlusion" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-temp-occlusion-orig" data-pair="pair-temp-occlusion" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-temp-occlusion-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/godfather_clip_1_Swedish.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-temp-occlusion" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-temp-occlusion-trans" data-pair="pair-temp-occlusion" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Swedish)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="lips-on-arm">
+      <h4>Lips Generated on Wrong Surface</h4>
+      <p class="example-desc">When a hand or arm covers the mouth, the model sometimes generates lip movements on the occluding object rather than the face.</p>
+      <p class="example-clip">Taylor Swift — lips appear on arm</p>
+      <div class="video-pair" data-pair="pair-lips-on-arm">
+        <div class="video-container">
+          <video id="pair-lips-on-arm-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/taylor_swift_shake_it_off_clip_3.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-lips-on-arm" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-lips-on-arm-orig" data-pair="pair-lips-on-arm" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-lips-on-arm-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/taylor_swift_shake_it_off_clip_3_Czech.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-lips-on-arm" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-lips-on-arm-trans" data-pair="pair-lips-on-arm" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Czech)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="voice-consistency">
+      <h4>Distinctive Voice Preservation</h4>
+      <p class="example-desc">Unique and recognizable voices are poorly preserved. The translated voice sounds generic rather than matching the character&#x27;s distinctive quality.</p>
+      <p class="example-clip">HP — Snape&#x27;s voice lost</p>
+      <div class="video-pair" data-pair="pair-voice-consistency">
+        <div class="video-container">
+          <video id="pair-voice-consistency-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/harry_potter_expelliarmus_clip_2.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-voice-consistency" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-voice-consistency-orig" data-pair="pair-voice-consistency" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-voice-consistency-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/harry_potter_expelliarmus_clip_2_Spanish.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-voice-consistency" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-voice-consistency-trans" data-pair="pair-voice-consistency" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Spanish)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="emotion-lost">
+      <h4>Emotional Intensity</h4>
+      <p class="example-desc">Strong emotion in the original (crying, screaming, urgency) is lost in translation. The dubbed voice sounds calm and flat regardless of the original&#x27;s emotional intensity.</p>
+      <p class="example-clip">Leave Britney Alone — crying voice lost</p>
+      <div class="video-pair" data-pair="pair-emotion-lost">
+        <div class="video-container">
+          <video id="pair-emotion-lost-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/leave_britney_alone_clip_1.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-emotion-lost" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-emotion-lost-orig" data-pair="pair-emotion-lost" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-emotion-lost-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/leave_britney_alone_clip_1_Spanish.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-emotion-lost" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-emotion-lost-trans" data-pair="pair-emotion-lost" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Spanish)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="stammering">
+      <h4>Non-Standard Speech Patterns</h4>
+      <p class="example-desc">Stammering, gurgling, and non-speech vocalizations are removed. The model normalizes all speech, losing important character and narrative details.</p>
+      <p class="example-clip">The King&#x27;s Speech — stammering removed</p>
+      <div class="video-pair" data-pair="pair-stammering">
+        <div class="video-container">
+          <video id="pair-stammering-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/kings_speech_clip_3.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-stammering" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-stammering-orig" data-pair="pair-stammering" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-stammering-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/kings_speech_clip_3_Spanish.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-stammering" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-stammering-trans" data-pair="pair-stammering" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Spanish)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="tight-lips">
+      <h4>'Tight Lips' Artifact</h4>
+      <p class="example-desc">When a character&#x27;s lips are tightly sealed between speech segments, the model cannot reproduce this. The video &#x27;jumps&#x27; when speech resumes, creating a visible discontinuity.</p>
+      <p class="example-clip">Forrest Gump — video jumps between segments</p>
+      <div class="video-pair" data-pair="pair-tight-lips">
+        <div class="video-container">
+          <video id="pair-tight-lips-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/forrest_gump_clip_1.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-tight-lips" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-tight-lips-orig" data-pair="pair-tight-lips" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-tight-lips-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/forrest_gump_clip_1_Russian.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-tight-lips" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-tight-lips-trans" data-pair="pair-tight-lips" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Russian)</span>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <!-- Full Results Table -->
+    <section>
+      <h2>Full Results</h2>
+      <p>Success rates per clip (out of 40 languages):</p>
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Clip</th>
+            <th>Category</th>
+            <th>Success</th>
+          </tr>
+        </thead>
+        <tbody>
+      <tr>
+        <td class="clip-name">a_star_is_born_shallows_clip_1</td>
+        <td class="clip-tags">singing</td>
+        <td class="clip-stats"><span class="bar-none">0/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">a_star_is_born_shallows_clip_2</td>
+        <td class="clip-tags">singing</td>
+        <td class="clip-stats"><span class="bar-good">39/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">a_star_is_born_shallows_clip_3</td>
+        <td class="clip-tags">singing</td>
+        <td class="clip-stats"><span class="bar-good">39/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">arcane_jinkx_clip_1</td>
+        <td class="clip-tags">animated_human</td>
+        <td class="clip-stats"><span class="bar-bad">41/56</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">arcane_jinkx_clip_2</td>
+        <td class="clip-tags">animated_human</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">black_widow_avengers_clip_1</td>
+        <td class="clip-tags">motion_blur</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">black_widow_avengers_clip_2</td>
+        <td class="clip-tags">motion_blur</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">black_widow_avengers_clip_3</td>
+        <td class="clip-tags">motion_blur</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">bourne_chase_clip_1</td>
+        <td class="clip-tags">motion_blur</td>
+        <td class="clip-stats"><span class="bar-good">40/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">cappucino_clip_1</td>
+        <td class="clip-tags">crosslang</td>
+        <td class="clip-stats"><span class="bar-none">0/2</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">dr_dolittle_clip_1</td>
+        <td class="clip-tags">animal</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">dr_dolittle_clip_2</td>
+        <td class="clip-tags">animal</td>
+        <td class="clip-stats"><span class="bar-good">42/42</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">fight_club_pixies_clip_1</td>
+        <td class="clip-tags">interesting</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">forrest_gump_clip_1</td>
+        <td class="clip-tags">movies_classic</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">forrest_gump_clip_2</td>
+        <td class="clip-tags">movies_classic</td>
+        <td class="clip-stats"><span class="bar-good">42/42</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">fox_news_clip_1</td>
+        <td class="clip-tags">short</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">fox_news_clip_2</td>
+        <td class="clip-tags">short</td>
+        <td class="clip-stats"><span class="bar-good">41/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">godfather_clip_1</td>
+        <td class="clip-tags">movies_classic</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">godfather_offer_clip_1</td>
+        <td class="clip-tags">movies_classic, lips_not_visible</td>
+        <td class="clip-stats"><span class="bar-good">41/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">harry_potter_avada_kadabra_clip_1</td>
+        <td class="clip-tags">madeup</td>
+        <td class="clip-stats"><span class="bar-bad">4/42</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">harry_potter_expelliarmus_clip_1</td>
+        <td class="clip-tags">madeup</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">harry_potter_expelliarmus_clip_2</td>
+        <td class="clip-tags">madeup</td>
+        <td class="clip-stats"><span class="bar-good">42/42</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">harry_potter_expelliarmus_clip_3</td>
+        <td class="clip-tags">madeup</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">kate_bush_wuthering_heights_clip_1</td>
+        <td class="clip-tags">singing</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">kate_bush_wuthering_heights_clip_2</td>
+        <td class="clip-tags">singing</td>
+        <td class="clip-stats"><span class="bar-good">41/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">kings_speech_clip_1</td>
+        <td class="clip-tags">interesting</td>
+        <td class="clip-stats"><span class="bar-ok">38/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">kings_speech_clip_2</td>
+        <td class="clip-tags">interesting</td>
+        <td class="clip-stats"><span class="bar-good">39/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">kings_speech_clip_3</td>
+        <td class="clip-tags">interesting</td>
+        <td class="clip-stats"><span class="bar-ok">38/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">lawrence_of_arabia_clip_1</td>
+        <td class="clip-tags">far_away</td>
+        <td class="clip-stats"><span class="bar-good">38/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">lawrence_of_arabia_clip_2</td>
+        <td class="clip-tags">far_away</td>
+        <td class="clip-stats"><span class="bar-good">40/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">leave_britney_alone_clip_1</td>
+        <td class="clip-tags">famous</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">makeup_tutorial</td>
+        <td class="clip-tags">short, single_speaker, frontal</td>
+        <td class="clip-stats"><span class="bar-good">41/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">monsters_inc_clip_1</td>
+        <td class="clip-tags">cgi</td>
+        <td class="clip-stats"><span class="bar-good">41/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">pulp_fiction_clip_1</td>
+        <td class="clip-tags">movies_classic</td>
+        <td class="clip-stats"><span class="bar-good">38/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">silence_of_the_lambs_clip_1</td>
+        <td class="clip-tags">occlusion, side_profile</td>
+        <td class="clip-stats"><span class="bar-good">39/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">silence_of_the_lambs_clip_2</td>
+        <td class="clip-tags">occlusion</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">taylor_swift_shake_it_off_clip_1</td>
+        <td class="clip-tags">singing</td>
+        <td class="clip-stats"><span class="bar-good">38/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">taylor_swift_shake_it_off_clip_2</td>
+        <td class="clip-tags">singing</td>
+        <td class="clip-stats"><span class="bar-ok">37/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">taylor_swift_shake_it_off_clip_3</td>
+        <td class="clip-tags">singing</td>
+        <td class="clip-stats"><span class="bar-good">38/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">the_devil_wears_prada_2_clip_1</td>
+        <td class="clip-tags">movies_classic</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">the_third_man_clip_1</td>
+        <td class="clip-tags">far_away</td>
+        <td class="clip-stats"><span class="bar-ok">38/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">v_for_vendetta_clip_1</td>
+        <td class="clip-tags">occlusion</td>
+        <td class="clip-stats"><span class="bar-good">40/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">v_for_vendetta_clip_2</td>
+        <td class="clip-tags">occlusion</td>
+        <td class="clip-stats"><span class="bar-good">40/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">yonit_levi_news_clip_1</td>
+        <td class="clip-tags">short, occlusion</td>
+        <td class="clip-stats"><span class="bar-good">40/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">yonit_levi_news_clip_2</td>
+        <td class="clip-tags">short</td>
+        <td class="clip-stats"><span class="bar-good">38/40</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">zootopia_clip_1</td>
+        <td class="clip-tags">cgi</td>
+        <td class="clip-stats"><span class="bar-ok">38/41</span></td>
+      </tr>
+      <tr>
+        <td class="clip-name">zootopia_clip_2</td>
+        <td class="clip-tags">cgi</td>
+        <td class="clip-stats"><span class="bar-good">39/40</span></td>
+      </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </div>
+
+  <footer>
+    <div class="container">
+      HeyGen Video Dubbing Benchmark &mdash; LTX Research, March 2026
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Play/Pause: synced pair
+      document.querySelectorAll('.play-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const pairId = btn.dataset.pair;
+          const orig = document.getElementById(pairId + '-orig');
+          const trans = document.getElementById(pairId + '-trans');
+          if (orig.paused) {
+            orig.currentTime = 0;
+            trans.currentTime = 0;
+            orig.play();
+            trans.play();
+            // Update all play buttons in this pair
+            document.querySelectorAll(`.play-btn[data-pair="${pairId}"]`).forEach(b => b.innerHTML = '&#9646;&#9646;');
+          } else {
+            orig.pause();
+            trans.pause();
+            document.querySelectorAll(`.play-btn[data-pair="${pairId}"]`).forEach(b => b.innerHTML = '&#9654;');
+          }
+        });
+      });
+
+      // Sound toggle: unmute one, mute the other
+      document.querySelectorAll('.sound-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const videoId = btn.dataset.video;
+          const pairId = btn.dataset.pair;
+          const video = document.getElementById(videoId);
+          const orig = document.getElementById(pairId + '-orig');
+          const trans = document.getElementById(pairId + '-trans');
+
+          if (video.muted) {
+            // Unmute this, mute the other
+            orig.muted = true;
+            trans.muted = true;
+            video.muted = false;
+            // Update button states
+            document.querySelectorAll(`.sound-btn[data-pair="${pairId}"]`).forEach(b => {
+              b.classList.remove('active');
+              b.innerHTML = '&#128264;';
+            });
+            btn.classList.add('active');
+            btn.innerHTML = '&#128266;';
+          } else {
+            video.muted = true;
+            btn.classList.remove('active');
+            btn.innerHTML = '&#128264;';
+          }
+        });
+      });
+
+      // Sync loop: when one video loops, restart the other
+      document.querySelectorAll('video').forEach(v => {
+        v.addEventListener('seeked', () => {
+          if (v.currentTime < 0.1) {
+            const id = v.id;
+            const pairId = id.replace(/-orig$/, '').replace(/-trans$/, '');
+            const otherId = id.endsWith('-orig') ? pairId + '-trans' : pairId + '-orig';
+            const other = document.getElementById(otherId);
+            if (other && !other.paused && Math.abs(other.currentTime - v.currentTime) > 0.5) {
+              other.currentTime = 0;
+            }
+          }
+        });
+      });
+    });
+
+  </script>
+</body>
+</html>
