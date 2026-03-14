@@ -149,12 +149,12 @@ NEGATIVE_EXAMPLES = [
         "clip_label": "Fox News — second anchor muted",
     },
     {
-        "id": "bg-music-desync",
-        "title": "Lip Sync Degrades with Background Music",
-        "description": "When background music is present, the lip sync quality degrades noticeably. The audio track is well-preserved but the dubbed speech drifts out of sync with the mouth movements.",
+        "id": "lip-sync-desync",
+        "title": "Speech Out of Sync with Lip Movement",
+        "description": "In some clips the dubbed speech drifts noticeably out of sync with the mouth movements. The cause is unclear — it could be the heavy shadows on the face, the slight camera angle, the background music, or a combination. The audio itself is well-preserved.",
         "clip": "fight_club_pixies_clip_1",
         "lang": "Spanish",
-        "clip_label": "Fight Club — speech out of sync despite good audio",
+        "clip_label": "Fight Club — dubbed speech drifts out of sync",
     },
     {
         "id": "tight-lips",
