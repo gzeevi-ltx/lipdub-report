@@ -252,11 +252,11 @@
     <div class="example" id="frontal-lip-sync">
       <h4>Frontal Dialogue Lip Sync</h4>
       <p class="example-desc">Standard frontal dialogue produces good lip sync quality with natural-sounding voice and accurate mouth movements.</p>
-      <p class="example-clip">Forrest Gump — bench scene</p>
+      <p class="example-clip">Fox News — news anchor frontal</p>
       <div class="video-pair" data-pair="pair-frontal-lip-sync">
         <div class="video-container">
           <video id="pair-frontal-lip-sync-orig" loop muted playsinline preload="metadata">
-            <source src="videos/originals/forrest_gump_clip_2.mp4" type="video/mp4">
+            <source src="videos/originals/fox_news_clip_1.mp4" type="video/mp4">
           </video>
           <div class="video-controls">
             <button class="play-btn" data-pair="pair-frontal-lip-sync" title="Play/Pause">&#9654;</button>
@@ -266,13 +266,13 @@
         </div>
         <div class="video-container">
           <video id="pair-frontal-lip-sync-trans" loop muted playsinline preload="metadata">
-            <source src="videos/translations/forrest_gump_clip_2_Russian.mp4" type="video/mp4">
+            <source src="videos/translations/fox_news_clip_1_Japanese.mp4" type="video/mp4">
           </video>
           <div class="video-controls">
             <button class="play-btn" data-pair="pair-frontal-lip-sync" title="Play/Pause">&#9654;</button>
             <button class="sound-btn" data-video="pair-frontal-lip-sync-trans" data-pair="pair-frontal-lip-sync" title="Toggle sound">&#128264;</button>
           </div>
-          <span class="video-label">Translated (Russian)</span>
+          <span class="video-label">Translated (Japanese)</span>
         </div>
       </div>
     </div>
@@ -417,28 +417,28 @@
       </div>
     </div>
 
-    <div class="example" id="character-accent">
-      <h4>Character Accent Preservation</h4>
-      <p class="example-desc">The distinctive accent quality of the original character is reflected in the translated voice.</p>
-      <p class="example-clip">Forrest Gump — distinctive Southern accent</p>
-      <div class="video-pair" data-pair="pair-character-accent">
+    <div class="example" id="accent-robustness">
+      <h4>Accent Robustness</h4>
+      <p class="example-desc">The model handles source audio with strong regional accents without degradation. Even with Forrest Gump&#x27;s distinctive Southern drawl, the translation is clean and natural-sounding.</p>
+      <p class="example-clip">Forrest Gump — translates well despite Southern accent</p>
+      <div class="video-pair" data-pair="pair-accent-robustness">
         <div class="video-container">
-          <video id="pair-character-accent-orig" loop muted playsinline preload="metadata">
+          <video id="pair-accent-robustness-orig" loop muted playsinline preload="metadata">
             <source src="videos/originals/forrest_gump_clip_2.mp4" type="video/mp4">
           </video>
           <div class="video-controls">
-            <button class="play-btn" data-pair="pair-character-accent" title="Play/Pause">&#9654;</button>
-            <button class="sound-btn" data-video="pair-character-accent-orig" data-pair="pair-character-accent" title="Toggle sound">&#128264;</button>
+            <button class="play-btn" data-pair="pair-accent-robustness" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-accent-robustness-orig" data-pair="pair-accent-robustness" title="Toggle sound">&#128264;</button>
           </div>
           <span class="video-label">Original (English)</span>
         </div>
         <div class="video-container">
-          <video id="pair-character-accent-trans" loop muted playsinline preload="metadata">
+          <video id="pair-accent-robustness-trans" loop muted playsinline preload="metadata">
             <source src="videos/translations/forrest_gump_clip_2_Russian.mp4" type="video/mp4">
           </video>
           <div class="video-controls">
-            <button class="play-btn" data-pair="pair-character-accent" title="Play/Pause">&#9654;</button>
-            <button class="sound-btn" data-video="pair-character-accent-trans" data-pair="pair-character-accent" title="Toggle sound">&#128264;</button>
+            <button class="play-btn" data-pair="pair-accent-robustness" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-accent-robustness-trans" data-pair="pair-accent-robustness" title="Toggle sound">&#128264;</button>
           </div>
           <span class="video-label">Translated (Russian)</span>
         </div>

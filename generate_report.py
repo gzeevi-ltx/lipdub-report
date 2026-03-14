@@ -21,9 +21,9 @@ POSITIVE_EXAMPLES = [
         "id": "frontal-lip-sync",
         "title": "Frontal Dialogue Lip Sync",
         "description": "Standard frontal dialogue produces good lip sync quality with natural-sounding voice and accurate mouth movements.",
-        "clip": "forrest_gump_clip_2",
-        "lang": "Russian",
-        "clip_label": "Forrest Gump — bench scene",
+        "clip": "fox_news_clip_1",
+        "lang": "Japanese",
+        "clip_label": "Fox News — news anchor frontal",
     },
     {
         "id": "named-entities",
@@ -66,12 +66,12 @@ POSITIVE_EXAMPLES = [
         "clip_label": "Black Widow — phone call with static",
     },
     {
-        "id": "character-accent",
-        "title": "Character Accent Preservation",
-        "description": "The distinctive accent quality of the original character is reflected in the translated voice.",
+        "id": "accent-robustness",
+        "title": "Accent Robustness",
+        "description": "The model handles source audio with strong regional accents without degradation. Even with Forrest Gump's distinctive Southern drawl, the translation is clean and natural-sounding.",
         "clip": "forrest_gump_clip_2",
         "lang": "Russian",
-        "clip_label": "Forrest Gump — distinctive Southern accent",
+        "clip_label": "Forrest Gump — translates well despite Southern accent",
     },
 ]
 
