@@ -54,7 +54,7 @@ POSITIVE_EXAMPLES = [
         "title": "Full Occlusion / Hidden Lips",
         "description": "When lips are consistently hidden behind a mask or in shadow, the model handles the dubbing well without visual artifacts.",
         "clip": "v_for_vendetta_clip_1",
-        "lang": "Spanish",
+        "lang": "Dutch",
         "clip_label": "V for Vendetta — full face mask",
     },
     {
