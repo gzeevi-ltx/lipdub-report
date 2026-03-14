@@ -335,12 +335,12 @@
 
     <div class="example" id="background-audio">
       <h4>Background Audio Preservation</h4>
-      <p class="example-desc">Background music, sound effects, and ambient sounds are preserved in the dubbed output while the speech is replaced.</p>
-      <p class="example-clip">Fight Club — drums and guitar in background</p>
+      <p class="example-desc">Background music, sound effects, and ambient sounds are preserved in the dubbed output while the speech is replaced. The sound of a lighter hitting the table is clearly retained.</p>
+      <p class="example-clip">Lawrence of Arabia — lighter on table</p>
       <div class="video-pair" data-pair="pair-background-audio">
         <div class="video-container">
           <video id="pair-background-audio-orig" loop muted playsinline preload="metadata">
-            <source src="videos/originals/fight_club_pixies_clip_1.mp4" type="video/mp4">
+            <source src="videos/originals/lawrence_of_arabia_clip_2.mp4" type="video/mp4">
           </video>
           <div class="video-controls">
             <button class="play-btn" data-pair="pair-background-audio" title="Play/Pause">&#9654;</button>
@@ -350,7 +350,7 @@
         </div>
         <div class="video-container">
           <video id="pair-background-audio-trans" loop muted playsinline preload="metadata">
-            <source src="videos/translations/fight_club_pixies_clip_1_Spanish.mp4" type="video/mp4">
+            <source src="videos/translations/lawrence_of_arabia_clip_2_Spanish.mp4" type="video/mp4">
           </video>
           <div class="video-controls">
             <button class="play-btn" data-pair="pair-background-audio" title="Play/Pause">&#9654;</button>
@@ -592,12 +592,12 @@
 
     <div class="example" id="emotion-lost">
       <h4>Emotional Intensity</h4>
-      <p class="example-desc">Strong emotion in the original (crying, screaming, urgency) is lost in translation. The dubbed voice sounds calm and flat regardless of the original&#x27;s emotional intensity.</p>
-      <p class="example-clip">Leave Britney Alone — crying voice lost</p>
+      <p class="example-desc">Strong emotion in the original is lost in translation. The king screams &#x27;forget about the blessed shilling&#x27; with real fury, but the dubbed voice sounds calm and measured. The model flattens vocal intensity regardless of the original performance.</p>
+      <p class="example-clip">The King&#x27;s Speech — screaming flattened</p>
       <div class="video-pair" data-pair="pair-emotion-lost">
         <div class="video-container">
           <video id="pair-emotion-lost-orig" loop muted playsinline preload="metadata">
-            <source src="videos/originals/leave_britney_alone_clip_1.mp4" type="video/mp4">
+            <source src="videos/originals/kings_speech_clip_1.mp4" type="video/mp4">
           </video>
           <div class="video-controls">
             <button class="play-btn" data-pair="pair-emotion-lost" title="Play/Pause">&#9654;</button>
@@ -607,13 +607,13 @@
         </div>
         <div class="video-container">
           <video id="pair-emotion-lost-trans" loop muted playsinline preload="metadata">
-            <source src="videos/translations/leave_britney_alone_clip_1_Spanish.mp4" type="video/mp4">
+            <source src="videos/translations/kings_speech_clip_1_Korean.mp4" type="video/mp4">
           </video>
           <div class="video-controls">
             <button class="play-btn" data-pair="pair-emotion-lost" title="Play/Pause">&#9654;</button>
             <button class="sound-btn" data-video="pair-emotion-lost-trans" data-pair="pair-emotion-lost" title="Toggle sound">&#128264;</button>
           </div>
-          <span class="video-label">Translated (Spanish)</span>
+          <span class="video-label">Translated (Korean)</span>
         </div>
       </div>
     </div>
@@ -640,6 +640,90 @@
           <div class="video-controls">
             <button class="play-btn" data-pair="pair-stammering" title="Play/Pause">&#9654;</button>
             <button class="sound-btn" data-video="pair-stammering-trans" data-pair="pair-stammering" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Spanish)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="nonverbal-vocalizations">
+      <h4>Non-Verbal Vocalizations Removed</h4>
+      <p class="example-desc">Non-speech vocalizations that are integral to the scene — such as gurgling, choking, or struggling to speak — are completely stripped out. The model only translates clean words, losing vocalizations that carry narrative meaning.</p>
+      <p class="example-clip">The King&#x27;s Speech — gurgling removed</p>
+      <div class="video-pair" data-pair="pair-nonverbal-vocalizations">
+        <div class="video-container">
+          <video id="pair-nonverbal-vocalizations-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/kings_speech_clip_2.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-nonverbal-vocalizations" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-nonverbal-vocalizations-orig" data-pair="pair-nonverbal-vocalizations" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-nonverbal-vocalizations-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/kings_speech_clip_2_Hebrew_(Israel).mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-nonverbal-vocalizations" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-nonverbal-vocalizations-trans" data-pair="pair-nonverbal-vocalizations" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Hebrew (Israel))</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="overlapping-speakers">
+      <h4>Overlapping Speakers</h4>
+      <p class="example-desc">When two speakers talk simultaneously or one cuts into another, the model mutes one of them entirely. The anchor on the left speaks during the clip but all translations silence her, producing a monologue instead of the original crosstalk.</p>
+      <p class="example-clip">Fox News — second anchor muted</p>
+      <div class="video-pair" data-pair="pair-overlapping-speakers">
+        <div class="video-container">
+          <video id="pair-overlapping-speakers-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/fox_news_clip_2.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-overlapping-speakers" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-overlapping-speakers-orig" data-pair="pair-overlapping-speakers" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-overlapping-speakers-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/fox_news_clip_2_Spanish.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-overlapping-speakers" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-overlapping-speakers-trans" data-pair="pair-overlapping-speakers" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Spanish)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="example" id="bg-music-desync">
+      <h4>Lip Sync Degrades with Background Music</h4>
+      <p class="example-desc">When background music is present, the lip sync quality degrades noticeably. The audio track is well-preserved but the dubbed speech drifts out of sync with the mouth movements.</p>
+      <p class="example-clip">Fight Club — speech out of sync despite good audio</p>
+      <div class="video-pair" data-pair="pair-bg-music-desync">
+        <div class="video-container">
+          <video id="pair-bg-music-desync-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/fight_club_pixies_clip_1.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-bg-music-desync" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-bg-music-desync-orig" data-pair="pair-bg-music-desync" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-bg-music-desync-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/fight_club_pixies_clip_1_Spanish.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-bg-music-desync" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-bg-music-desync-trans" data-pair="pair-bg-music-desync" title="Toggle sound">&#128264;</button>
           </div>
           <span class="video-label">Translated (Spanish)</span>
         </div>
