@@ -444,6 +444,34 @@
         </div>
       </div>
     </div>
+
+    <div class="example" id="multi-speaker">
+      <h4>Multiple Speakers with Distinct Voices</h4>
+      <p class="example-desc">When multiple speakers take turns talking (without overlapping), the model handles them well — each character gets a distinct-sounding translated voice that stays consistent throughout the clip.</p>
+      <p class="example-clip">Harry Potter — two speakers, distinct voices preserved</p>
+      <div class="video-pair" data-pair="pair-multi-speaker">
+        <div class="video-container">
+          <video id="pair-multi-speaker-orig" loop muted playsinline preload="metadata">
+            <source src="videos/originals/harry_potter_expelliarmus_clip_3.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-multi-speaker" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-multi-speaker-orig" data-pair="pair-multi-speaker" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Original (English)</span>
+        </div>
+        <div class="video-container">
+          <video id="pair-multi-speaker-trans" loop muted playsinline preload="metadata">
+            <source src="videos/translations/harry_potter_expelliarmus_clip_3_Chinese_(Cantonese,_Traditional).mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" data-pair="pair-multi-speaker" title="Play/Pause">&#9654;</button>
+            <button class="sound-btn" data-video="pair-multi-speaker-trans" data-pair="pair-multi-speaker" title="Toggle sound">&#128264;</button>
+          </div>
+          <span class="video-label">Translated (Chinese (Cantonese, Traditional))</span>
+        </div>
+      </div>
+    </div>
     </section>
 
     <!-- What Needs Improvement -->

@@ -73,6 +73,14 @@ POSITIVE_EXAMPLES = [
         "lang": "Russian",
         "clip_label": "Forrest Gump — translates well despite Southern accent",
     },
+    {
+        "id": "multi-speaker",
+        "title": "Multiple Speakers with Distinct Voices",
+        "description": "When multiple speakers take turns talking (without overlapping), the model handles them well — each character gets a distinct-sounding translated voice that stays consistent throughout the clip.",
+        "clip": "harry_potter_expelliarmus_clip_3",
+        "lang": "Chinese (Cantonese, Traditional)",
+        "clip_label": "Harry Potter — two speakers, distinct voices preserved",
+    },
 ]
 
 NEGATIVE_EXAMPLES = [
