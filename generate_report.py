@@ -28,10 +28,10 @@ POSITIVE_EXAMPLES = [
     {
         "id": "named-entities",
         "title": "Named Entities and Proper Nouns",
-        "description": "Location names, technical terms, and proper nouns are correctly preserved across languages rather than being mistranslated.",
-        "clip": "black_widow_avengers_clip_2",
-        "lang": "Hebrew (Israel)",
-        "clip_label": "Black Widow — phone call ('Zelinsky Plaza')",
+        "description": "Organization names, technical terms, and proper nouns are correctly preserved across languages rather than being mistranslated. Terms like 'UNIFIL' and 'Hezbollah' are kept intact.",
+        "clip": "yonit_levi_news_clip_2",
+        "lang": "Spanish",
+        "clip_label": "Yonit Levi news — UNIFIL and Hezbollah preserved",
     },
     {
         "id": "non-human",
