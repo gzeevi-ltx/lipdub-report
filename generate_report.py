@@ -608,6 +608,19 @@ def generate_html(base_url: str) -> str:
     <section class="findings-negative">
       <h2>What Needs Improvement</h2>
 {negative_examples_html}
+
+      <h3 style="margin-top: 36px;">API-Level Failures</h3>
+      <p style="color: #444; margin-bottom: 16px;">Some clips result in a complete 0/40 failure rate — the API rejects them outright rather than producing degraded output.</p>
+      <div class="example">
+        <h4>Minimum Duration</h4>
+        <p class="example-desc">Clips under ~1 second are rejected by the API. The cappuccino clip (a quick espresso pour) failed across all 40 languages with no output produced.</p>
+        <p class="example-clip">Cappuccino clip — 0/40, below HeyGen's minimum duration</p>
+      </div>
+      <div class="example">
+        <h4>Vocalization-Only Audio</h4>
+        <p class="example-desc">Clips containing only non-verbal vocalizations (no recognizable speech) are rejected entirely. The model requires actual words to translate — pure singing, humming, or vocal sounds with no dialogue result in a complete failure.</p>
+        <p class="example-clip">A Star Is Born clip 1 — 0/40, vocalizations only, no dialogue</p>
+      </div>
     </section>
 
     <!-- Full Results Table -->
